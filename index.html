@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python Automation, GUI and File Handling Notes</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --paper: #ffffff;
+      --text: #1f2937;
+      --muted: #5f6b7a;
+      --border: #d8dee8;
+      --accent: #2563eb;
+      --code-bg: #0f172a;
+      --code-text: #e5e7eb;
+      --table-head: #eef2ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.7;
+    }
+
+    .topbar {
+      background: #111827;
+      color: white;
+      padding: 18px 24px;
+      border-bottom: 4px solid var(--accent);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.3;
+    }
+
+    .topbar p {
+      margin: 6px 0 0;
+      color: #d1d5db;
+      font-size: 15px;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 28px auto;
+      padding: 0 18px 48px;
+    }
+
+    .doc-selector {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .doc-card {
+      appearance: none;
+      width: 100%;
+      min-height: 132px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--text);
+      cursor: pointer;
+      padding: 18px;
+      text-align: left;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+      transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    .doc-card:hover,
+    .doc-card:focus {
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.14);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .doc-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+    }
+
+    .doc-card strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .doc-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    article {
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.25;
+      color: #111827;
+    }
+
+    h1 {
+      font-size: 34px;
+      margin-top: 0;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h2 {
+      margin-top: 34px;
+      font-size: 25px;
+    }
+
+    h3 {
+      margin-top: 26px;
+      font-size: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      display: block;
+      overflow-x: auto;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--table-head);
+      font-weight: 700;
+    }
+
+    code {
+      background: #eef2f7;
+      border-radius: 4px;
+      padding: 2px 5px;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.95em;
+    }
+
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    .loading,
+    .error,
+    .viewer-heading {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .viewer-heading {
+      font-size: 15px;
+      margin: 0 0 14px;
+    }
+
+    .error {
+      color: #b91c1c;
+    }
+
+    @media (max-width: 700px) {
+      .doc-selector {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 16px;
+      }
+
+      .topbar h1 {
+        font-size: 20px;
+      }
+
+      main {
+        margin: 16px auto;
+        padding: 0 12px 32px;
+      }
+
+      article {
+        padding: 18px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1>Python Automation, GUI and File Handling Notes</h1>
+      <p>Session-wise and day-wise Hinglish notes with detailed code explanation</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="doc-selector" aria-label="Choose notes document">
+      <button class="doc-card" type="button" data-doc="session">
+        <strong>1. Session Wise Topics</strong>
+        <span>Session 3 to Session 6 with Functions, APIs, GUI, automation, file handling, Flask, Turtle and projects.</span>
+      </button>
+      <button class="doc-card" type="button" data-doc="day">
+        <strong>2. Day Wise Topics</strong>
+        <span>Day 12, 14, 15, 16 and 17 with functions, files, exception handling, OOP and automation projects.</span>
+      </button>
+    </section>
+
+    <article id="content">
+      <p class="loading">Choose one document above to open the notes.</p>
+    </article>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const content = document.getElementById("content");
+    const cards = Array.from(document.querySelectorAll(".doc-card"));
+    const documents = {
+      session: {
+        title: "Session Wise Topics",
+        file: "session_wise_python_notes.md"
+      },
+      day: {
+        title: "Day Wise Topics",
+        file: "day_wise_python_notes.md"
+      }
+    };
+
+    marked.setOptions({
+      gfm: true,
+      breaks: false
+    });
+
+    function setActiveCard(docKey) {
+      cards.forEach((card) => {
+        card.classList.toggle("active", card.dataset.doc === docKey);
+      });
+    }
+
+    function loadDocument(docKey) {
+      const selected = documents[docKey] || documents.session;
+      setActiveCard(docKey);
+      content.innerHTML = `<p class="loading">Loading ${selected.title}...</p>`;
+
+      fetch(selected.file)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Notes file could not be loaded.");
+          }
+          return response.text();
+        })
+        .then((markdown) => {
+          content.innerHTML = `
+            <p class="viewer-heading">Opened document: ${selected.title}</p>
+            ${marked.parse(markdown)}
+          `;
+          window.location.hash = docKey;
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        })
+        .catch((error) => {
+          content.innerHTML = `
+            <h1>Notes could not be loaded</h1>
+            <p class="error">${error.message}</p>
+            <p>Please check that the selected Markdown file exists in the same folder as this page.</p>
+          `;
+        });
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener("click", () => {
+        loadDocument(card.dataset.doc);
+      });
+    });
+
+    const initialDoc = window.location.hash.replace("#", "") || "session";
+    loadDocument(documents[initialDoc] ? initialDoc : "session");
+  </script>
+</body>
+</html>
